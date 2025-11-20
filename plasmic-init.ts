@@ -1,5 +1,5 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
-
+import { AwesomeButton } from "./components/AwesomeButton";
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -23,3 +23,26 @@ export const PLASMIC = initPlasmicLoader({
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
 // PLASMIC.registerComponent(...);
+// Register AwesomeButton component
+PLASMIC.registerComponent(AwesomeButton, {
+  name: "AwesomeButton",
+  props: {
+    text: {
+      type: "string",
+      defaultValue: "Click me!",
+      description: "Button text"
+    },
+    variant: {
+      type: "choice",
+      options: ["primary", "secondary", "success"],
+      defaultValue: "primary",
+      description: "Button style variant"
+    },
+    onClick: {
+      type: "eventHandler",
+      description: "Triggered when button is clicked",
+      argTypes: []  // ← ADD THIS LINE
+    }
+  },
+  importPath: "./components/AwesomeButton",
+});
