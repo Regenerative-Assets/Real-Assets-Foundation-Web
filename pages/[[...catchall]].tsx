@@ -10,6 +10,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
 import { useRouter } from "next/router";
 import { PLASMIC } from "@/plasmic-init";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function PlasmicLoaderPage(props: {
   plasmicData?: ComponentRenderData;
@@ -21,7 +22,7 @@ export default function PlasmicLoaderPage(props: {
     return <Error statusCode={404} />;
   }
   const pageMeta = plasmicData.entryCompMetas[0];
-  return (
+  return (<>
     <PlasmicRootProvider
       loader={PLASMIC}
       prefetchedData={plasmicData}
@@ -31,7 +32,8 @@ export default function PlasmicLoaderPage(props: {
       pageQuery={router.query}
     >
       <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+    </PlasmicRootProvider><SpeedInsights />
+  </>
   );
 }
 
