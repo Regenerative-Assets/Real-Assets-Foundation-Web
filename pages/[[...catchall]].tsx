@@ -1,4 +1,4 @@
-'use client';  // 👈 ensures this file runs client-side for Speed Insights
+'use client';  // ensures this file runs client-side for Speed Insights
 import * as React from "react";
 import {
   PlasmicComponent,
