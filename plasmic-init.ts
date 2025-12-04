@@ -1,5 +1,6 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
 import { AwesomeButton } from "./components/AwesomeButton";
+import { TeamMemberCard } from "./components/TeamMemberCard";
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -45,4 +46,58 @@ PLASMIC.registerComponent(AwesomeButton, {
     }
   },
   importPath: "./components/AwesomeButton",
+});
+
+// Register TeamMemberCard component
+PLASMIC.registerComponent(TeamMemberCard, {
+  name: "TeamMemberCard",
+  props: {
+    name: {
+      type: "string",
+      defaultValue: "Team Member",
+      description: "Team member's name"
+    },
+    title: {
+      type: "string",
+      defaultValue: "Position",
+      description: "Team member's job title or role"
+    },
+    shortBio: {
+      type: "string",
+      defaultValue: "Short bio goes here",
+      description: "Brief bio shown on the card (2-3 sentences)"
+    },
+    fullBio: {
+      type: "string",
+      defaultValue: "Full bio goes here",
+      description: "Complete bio shown when expanded"
+    },
+    imageUrl: {
+      type: "imageUrl",
+      defaultValue: "",
+      description: "URL to team member's photo"
+    },
+    linkedIn: {
+      type: "string",
+      defaultValue: "",
+      description: "LinkedIn profile URL"
+    },
+    twitter: {
+      type: "string",
+      defaultValue: "",
+      description: "Twitter/X profile URL"
+    },
+    email: {
+      type: "string",
+      defaultValue: "",
+      description: "Email address"
+    },
+    displayStyle: {
+      type: "choice",
+      options: ["modal", "card", "floating"],
+      defaultValue: "modal",
+      description: "How the expanded bio is displayed: modal (full overlay), card (expanded card), or floating (floating card)"
+    }
+  },
+  importPath: "./components/TeamMemberCard",
 });
