@@ -433,7 +433,7 @@ export function TeamMemberCard({
           <h3 style={cardStyles.name}>{name}</h3>
           <p style={cardStyles.title}>{title}</p>
           <p style={cardStyles.shortBio}>{shortBio}</p>
-          <span style={cardStyles.readMore}>Read more →</span>
+          <span style={cardStyles.readMore}>Full Bio →</span>
         </div>
       </div>
 
