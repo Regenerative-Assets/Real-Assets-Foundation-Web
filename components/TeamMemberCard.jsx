@@ -133,7 +133,6 @@ export function TeamMemberCard({
       lineHeight: '1.8',
       color: '#444',
       marginBottom: '24px',
-      whiteSpace: 'pre-wrap',
     },
     socialLinks: {
       display: 'flex',
@@ -225,7 +224,10 @@ export function TeamMemberCard({
         <div style={modalStyles.modalContent}>
           <h2 style={cardStyles.name}>{name}</h2>
           <p style={cardStyles.title}>{title}</p>
-          <div style={modalStyles.fullBio}>{fullBio}</div>
+          <div 
+            style={modalStyles.fullBio}
+            dangerouslySetInnerHTML={{ __html: fullBio }}
+          />
           {(linkedIn || twitter || email) && (
             <div style={modalStyles.socialLinks}>
               {linkedIn && (
@@ -295,7 +297,10 @@ export function TeamMemberCard({
         </button>
         <h3 style={{...cardStyles.name, marginBottom: '8px'}}>{name}</h3>
         <p style={{...cardStyles.title, marginBottom: '16px'}}>{title}</p>
-        <div style={{...modalStyles.fullBio, marginBottom: '16px'}}>{fullBio}</div>
+        <div 
+          style={{...modalStyles.fullBio, marginBottom: '16px'}}
+          dangerouslySetInnerHTML={{ __html: fullBio }}
+        />
         {(linkedIn || twitter || email) && (
           <div style={{...modalStyles.socialLinks, marginTop: '16px'}}>
             {linkedIn && (
@@ -368,7 +373,10 @@ export function TeamMemberCard({
         <div style={{...cardStyles.content, padding: '32px'}}>
           <h2 style={cardStyles.name}>{name}</h2>
           <p style={cardStyles.title}>{title}</p>
-          <div style={{...modalStyles.fullBio, fontSize: '15px'}}>{fullBio}</div>
+          <div 
+            style={{...modalStyles.fullBio, fontSize: '15px'}}
+            dangerouslySetInnerHTML={{ __html: fullBio }}
+          />
           {(linkedIn || twitter || email) && (
             <div style={modalStyles.socialLinks}>
               {linkedIn && (
