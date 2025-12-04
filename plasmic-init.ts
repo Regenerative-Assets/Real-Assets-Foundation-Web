@@ -68,7 +68,7 @@ PLASMIC.registerComponent(TeamMemberCard, {
       description: "Brief bio shown on the card (2-3 sentences)"
     },
     fullBio: {
-      type: "string",
+      type: "slot",
       defaultValue: "Full bio goes here",
       description: "Complete bio shown when expanded"
     },
