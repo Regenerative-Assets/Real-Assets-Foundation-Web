@@ -14,18 +14,128 @@ export function TeamMemberCard(props) {
   } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const isBrowser = typeof window !== "undefined";
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const cardStyles = {
+    container: {
+      position: 'relative',
+      width: '100%',
+      maxWidth: '320px',
+      backgroundColor: '#ffffff',
+      borderRadius: '16px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      cursor: 'pointer',
+    },
+    image: {
+      width: '100%',
+      height: '320px',
+      objectFit: 'cover',
+      backgroundColor: '#f0f0f0',
+    },
+    content: {
+      padding: '24px',
+    },
+    name: {
+      fontSize: '24px',
+      fontWeight: '700',
+      marginBottom: '8px',
+      color: '#1a1a1a',
+    },
+    title: {
+      fontSize: '16px',
+      fontWeight: '500',
+      color: '#666',
+      marginBottom: '12px',
+    },
+    shortBio: {
+      fontSize: '14px',
+      lineHeight: '1.6',
+      color: '#444',
+      marginBottom: '16px',
+    },
+    readMore: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#007bff',
+      textDecoration: 'none',
+      display: 'inline-block',
+    },
+  };
+
+  const modalStyles = {
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+    },
+    modal: {
+      backgroundColor: '#ffffff',
+      borderRadius: '20px',
+      maxWidth: '700px',
+      width: '100%',
+      maxHeight: '90vh',
+      overflow: 'auto',
+      position: 'relative',
+    },
+    closeButton: {
+      position: 'absolute',
+      top: '20px',
+      right: '20px',
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      border: 'none',
+      fontSize: '24px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'background-color 0.2s',
+      color: '#333',
+      zIndex: 10,
+    },
+    modalImage: {
+      width: '100%',
+      height: '400px',
+      objectFit: 'cover',
+      backgroundColor: '#f0f0f0',
+    },
+    modalContent: {
+      padding: '40px',
+    },
+    fullBio: {
+      fontSize: '16px',
+      lineHeight: '1.8',
+      color: '#444',
+      marginBottom: '24px',
+    },
+  };
 
   // Safely manage body scroll
   useEffect(() => {
-    if (!isBrowser) return;
+    if (!isMounted) return;
     document.body.style.overflow = isExpanded && displayStyle === "modal"
       ? "hidden"
       : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isExpanded, displayStyle, isBrowser]);
+  }, [isExpanded, displayStyle, isMounted]);
 
   const handleToggle = () => {
     setIsExpanded((v) => !v);
@@ -61,14 +171,14 @@ export function TeamMemberCard(props) {
         </div>
       </div>
 
-      {isExpanded && isBrowser && (
+      {isExpanded && isMounted && (
         <>
           {displayStyle === "modal" && (
             <div style={modalStyles.overlay} onClick={handleClose}>
-              <div
-                style={modalStyles.modal}
-                onClick={(e) => e.stopPropagation()}
-              >
+                <div
+                  style={modalStyles.modal}
+                  onClick={(e) => e.stopPropagation()}
+                >
                 <button
                   style={modalStyles.closeButton}
                   onClick={handleClose}
@@ -92,6 +202,7 @@ export function TeamMemberCard(props) {
                     <div
                       style={modalStyles.fullBio}
                       dangerouslySetInnerHTML={{ __html: fullBioHtml }}
+                      suppressHydrationWarning
                     />
                   )}
                 </div>
