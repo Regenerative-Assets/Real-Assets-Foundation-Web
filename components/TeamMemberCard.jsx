@@ -1,24 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from 'react';
 
-export function TeamMemberCard(props) {
-  const {
-    name = "Team Member",
-    title = "Position",
-    shortBio = "Short bio goes here",
-    fullBio,
-    imageUrl = "",
-    linkedIn = "",
-    twitter = "",
-    email = "",
-    displayStyle = "modal",
-  } = props;
-
+export function TeamMemberCard({
+  name = 'Team Member',
+  title = 'Position',
+  shortBio = 'Short bio goes here',
+  fullBio = 'Full bio goes here',
+  imageUrl = '',
+  linkedIn = '',
+  twitter = '',
+  email = '',
+  displayStyle = 'modal' // 'modal', 'card', 'floating'
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded);
+    if (!isExpanded && displayStyle === 'modal') {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  };
+
+  const handleClose = () => {
+    setIsExpanded(false);
+    document.body.style.overflow = 'unset';
+  };
 
   const cardStyles = {
     container: {
@@ -81,6 +89,7 @@ export function TeamMemberCard(props) {
       justifyContent: 'center',
       zIndex: 1000,
       padding: '20px',
+      animation: 'fadeIn 0.3s ease',
     },
     modal: {
       backgroundColor: '#ffffff',
@@ -90,6 +99,7 @@ export function TeamMemberCard(props) {
       maxHeight: '90vh',
       overflow: 'auto',
       position: 'relative',
+      animation: 'slideUp 0.3s ease',
     },
     closeButton: {
       position: 'absolute',
@@ -124,41 +134,305 @@ export function TeamMemberCard(props) {
       color: '#444',
       marginBottom: '24px',
     },
+    socialLinks: {
+      display: 'flex',
+      gap: '16px',
+      marginTop: '24px',
+    },
+    socialLink: {
+      padding: '10px 20px',
+      backgroundColor: '#f5f5f5',
+      borderRadius: '8px',
+      textDecoration: 'none',
+      color: '#333',
+      fontSize: '14px',
+      fontWeight: '500',
+      transition: 'background-color 0.2s',
+    },
   };
 
-  // Safely manage body scroll
-  useEffect(() => {
-    if (!isMounted) return;
-    document.body.style.overflow = isExpanded && displayStyle === "modal"
-      ? "hidden"
-      : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isExpanded, displayStyle, isMounted]);
-
-  const handleToggle = () => {
-    setIsExpanded((v) => !v);
+  const floatingStyles = {
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 999,
+    },
+    floating: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: '#ffffff',
+      borderRadius: '16px',
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+      padding: '32px',
+      maxWidth: '500px',
+      width: '90%',
+      zIndex: 1000,
+      animation: 'scaleIn 0.3s ease',
+    },
   };
 
-  const handleClose = () => {
-    setIsExpanded(false);
+  const expandedCardStyles = {
+    expanded: {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '90%',
+      maxWidth: '600px',
+      maxHeight: '90vh',
+      overflow: 'auto',
+      zIndex: 1000,
+      animation: 'expandCard 0.3s ease',
+    },
   };
 
-  // Normalize fullBio for Plasmic
-  const fullBioHtml =
-    typeof fullBio === "string" ? fullBio : "";
+  const renderModal = () => (
+    <div style={modalStyles.overlay} onClick={handleClose}>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+      <div style={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
+        <button
+          style={modalStyles.closeButton}
+          onClick={handleClose}
+          onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'}
+          onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'}
+        >
+          ×
+        </button>
+        {imageUrl && (
+          <img src={imageUrl} alt={name} style={modalStyles.modalImage} />
+        )}
+        <div style={modalStyles.modalContent}>
+          <h2 style={cardStyles.name}>{name}</h2>
+          <p style={cardStyles.title}>{title}</p>
+          <div 
+            style={modalStyles.fullBio}
+            dangerouslySetInnerHTML={{ __html: fullBio }}
+          />
+          {(linkedIn || twitter || email) && (
+            <div style={modalStyles.socialLinks}>
+              {linkedIn && (
+                <a
+                  href={linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  LinkedIn
+                </a>
+              )}
+              {twitter && (
+                <a
+                  href={twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  Twitter
+                </a>
+              )}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  Email
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
-  /* ---- styles unchanged (omitted here for brevity) ---- */
-  /* Keep all your style objects exactly as-is */
+  const renderFloatingCard = () => (
+    <>
+      <div style={floatingStyles.overlay} onClick={handleClose} />
+      <style>{`
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+          }
+        }
+      `}</style>
+      <div style={floatingStyles.floating}>
+        <button
+          style={{...modalStyles.closeButton, top: '16px', right: '16px'}}
+          onClick={handleClose}
+          onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'}
+          onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'}
+        >
+          ×
+        </button>
+        <h3 style={{...cardStyles.name, marginBottom: '8px'}}>{name}</h3>
+        <p style={{...cardStyles.title, marginBottom: '16px'}}>{title}</p>
+        <div 
+          style={{...modalStyles.fullBio, marginBottom: '16px'}}
+          dangerouslySetInnerHTML={{ __html: fullBio }}
+        />
+        {(linkedIn || twitter || email) && (
+          <div style={{...modalStyles.socialLinks, marginTop: '16px'}}>
+            {linkedIn && (
+              <a
+                href={linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={modalStyles.socialLink}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+              >
+                LinkedIn
+              </a>
+            )}
+            {twitter && (
+              <a
+                href={twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={modalStyles.socialLink}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+              >
+                Twitter
+              </a>
+            )}
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                style={modalStyles.socialLink}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+              >
+                Email
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </>
+  );
 
-  /* ---------- RENDER ---------- */
+  const renderExpandedCard = () => (
+    <>
+      <div style={floatingStyles.overlay} onClick={handleClose} />
+      <style>{`
+        @keyframes expandCard {
+          from {
+            transform: translate(-50%, -50%) scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
+      <div style={{...cardStyles.container, ...expandedCardStyles.expanded}}>
+        <button
+          style={{...modalStyles.closeButton, top: '16px', right: '16px'}}
+          onClick={handleClose}
+          onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'}
+          onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.1)'}
+        >
+          ×
+        </button>
+        {imageUrl && (
+          <img src={imageUrl} alt={name} style={cardStyles.image} />
+        )}
+        <div style={{...cardStyles.content, padding: '32px'}}>
+          <h2 style={cardStyles.name}>{name}</h2>
+          <p style={cardStyles.title}>{title}</p>
+          <div 
+            style={{...modalStyles.fullBio, fontSize: '15px'}}
+            dangerouslySetInnerHTML={{ __html: fullBio }}
+          />
+          {(linkedIn || twitter || email) && (
+            <div style={modalStyles.socialLinks}>
+              {linkedIn && (
+                <a
+                  href={linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  LinkedIn
+                </a>
+              )}
+              {twitter && (
+                <a
+                  href={twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  Twitter
+                </a>
+              )}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  style={modalStyles.socialLink}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#e0e0e0'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
+                >
+                  Email
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <>
       <div
         style={cardStyles.container}
         onClick={handleToggle}
+        onMouseOver={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px)';
+          e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+        }}
       >
         {imageUrl && (
           <img src={imageUrl} alt={name} style={cardStyles.image} />
@@ -171,44 +445,11 @@ export function TeamMemberCard(props) {
         </div>
       </div>
 
-      {isExpanded && isMounted && (
+      {isExpanded && (
         <>
-          {displayStyle === "modal" && (
-            <div style={modalStyles.overlay} onClick={handleClose}>
-                <div
-                  style={modalStyles.modal}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                <button
-                  style={modalStyles.closeButton}
-                  onClick={handleClose}
-                >
-                  ×
-                </button>
-
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt={name}
-                    style={modalStyles.modalImage}
-                  />
-                )}
-
-                <div style={modalStyles.modalContent}>
-                  <h2 style={cardStyles.name}>{name}</h2>
-                  <p style={cardStyles.title}>{title}</p>
-
-                  {fullBioHtml && (
-                    <div
-                      style={modalStyles.fullBio}
-                      dangerouslySetInnerHTML={{ __html: fullBioHtml }}
-                      suppressHydrationWarning
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {displayStyle === 'modal' && renderModal()}
+          {displayStyle === 'floating' && renderFloatingCard()}
+          {displayStyle === 'card' && renderExpandedCard()}
         </>
       )}
     </>
