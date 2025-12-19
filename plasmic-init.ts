@@ -69,8 +69,7 @@ PLASMIC.registerComponent(TeamMemberCard, {
     },
     fullBio: {
       type: "richText",
-      defaultValue: "<p>Full bio goes here</p>",
-      description: "Complete bio shown when expanded (supports HTML)"
+  
     },
     imageUrl: {
       type: "imageUrl",
@@ -102,3 +101,4 @@ PLASMIC.registerComponent(TeamMemberCard, {
   importPath: "./components/TeamMemberCard",
 
 });
+
